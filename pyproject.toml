@@ -112,7 +112,6 @@ init-hook = """\
 load-plugins = [
     "pylint.extensions.code_style",
     "pylint.extensions.typing",
-    "hass_constructor",
     "hass_enforce_type_hints",
     "hass_imports",
     "hass_logger",
@@ -266,9 +265,14 @@ select = [
     "W",  # pycodestyle
     "UP",  # pyupgrade
     "PGH004",  # Use specific rule codes when using noqa
+    "ANN204",  # Missing return type annotation for special methods
 ]
 
 [tool.ruff.per-file-ignores]
+
+"tests/*" = [
+    "ANN204",  # Missing return types for special methods don't matter in tests
+]
 
 # TODO: these files have functions that are too complex, but flake8's and ruff's
 #       complexity (and/or nested-function) handling differs; trying to add a noqa doesn't work
@@ -281,3 +285,7 @@ select = [
 
 [tool.ruff.mccabe]
 max-complexity = 25
+
+[tool.ruff.flake8-annotations]
+mypy-init-return = true  # allow the omission of a return type hint for __init__ if at least one argument is annotated
+allow-untyped-return-if-untyped = true  # allow the omission of a return type if the function is untyped
