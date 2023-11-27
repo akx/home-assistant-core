@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 from collections import OrderedDict
 from collections.abc import Generator, Mapping, Sequence
 from contextlib import contextmanager
@@ -1455,3 +1456,11 @@ def async_mock_cloud_connection_status(hass: HomeAssistant, connected: bool) -> 
     else:
         state = CloudConnectionState.CLOUD_DISCONNECTED
     async_dispatcher_send(hass, SIGNAL_CLOUD_CONNECTION_STATE, state)
+
+
+def patches(*patch_names) -> contextlib.ExitStack:
+    """Stack multiple `patch()` calls."""
+    cm = contextlib.ExitStack()
+    for name in patch_names:
+        cm.enter_context(patch(name))
+    return cm
